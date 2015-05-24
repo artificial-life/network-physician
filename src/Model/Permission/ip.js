@@ -12,6 +12,8 @@ class Ip extends Abstract {
     constructor(ip) {
         super();
         this.ip = ip;
+        this.is_dropped = true;
+
     }
     static keyToString(key_obj) {
         return key_obj.toString();
@@ -24,6 +26,12 @@ class Ip extends Abstract {
             key: this.ip,
             permission: NAME
         };
+    }
+    keyToString() {
+        return this.ip;
+    }
+    getName() {
+        return Ip.getName();
     }
 }
 

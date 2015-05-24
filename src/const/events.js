@@ -7,8 +7,13 @@ var events = {
         register: 'inspector.register'
     },
     permission: {
-        dropped: 'permission.dropped',
-        restored: 'permission.restored'
+        dropped: function (name, key) {
+            return 'permission.dropped.' + name + '.' + key;
+        },
+        restored: function (name, key) {
+            return 'permission.restored.' + name + '.' + key;
+        },
+        request: 'permission.request'
     }
 };
 

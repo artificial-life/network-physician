@@ -29,6 +29,10 @@ class Auth extends Abstract {
         this.config = config || {};
         if (!this.emitter) return Promise.reject('U should set channels before');
 
+        var request_task = this.getEvents('permission').request;
+
+        this.emitter.listenTask(request_task, data => this.check(data));
+
         return this.list.init();
     }
 
@@ -57,6 +61,8 @@ class Auth extends Abstract {
          * own API
          */
     check(asked_permissions) {
+        console.log(asked_permissions);
+
         asked_permissions = util.isArray(asked_permissions) ? asked_permissions : [asked_permissions];
 
         if (asked_permissions.length === 0) {}
@@ -72,6 +78,7 @@ class Auth extends Abstract {
             var key = asked_permissions[i].key;
             var info = {
                 name: name,
+                key: key,
                 valid: true
             };
 

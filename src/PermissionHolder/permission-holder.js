@@ -82,7 +82,7 @@ class PermissionList extends Abstract {
         var changed = this.getPermission(name).restore(data);
 
         if (changed) {
-            this.emitter.emit(this.event_names.restored, {
+            this.emitter.emit(this.event_names.restored(data.name, data.key), {
                 permission: data
             });
         }
@@ -92,7 +92,7 @@ class PermissionList extends Abstract {
         var changed = this.getPermission(name).drop(data);
 
         if (changed) {
-            this.emitter.emit(this.event_names.dropped, {
+            this.emitter.emit(this.event_names.dropped(data.name, data.key), {
                 permission: data
             });
         }

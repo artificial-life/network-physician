@@ -25,6 +25,15 @@ class Permission_Abstract {
         var message = {};
         return message;
     }
+    drop() {
+        this.is_dropped = true;
+    }
+    restore() {
+        this.is_dropped = false;
+    }
+    isDropped() {
+        return this.is_dropped;
+    }
 }
 
 module.exports = Permission_Abstract;

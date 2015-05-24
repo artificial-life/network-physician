@@ -3,5 +3,11 @@
 var Abstract = require('../Abstract/abstract.js');
 
 class SampleService extends Abstract {
-    constructor() {}
+    constructor() {
+        super({});
+        this.addPermission('ip', 'ya.ru');
+
+    }
 }
+
+module.exports = SampleService;
