@@ -8,6 +8,14 @@
                 "less_then": 1000,
                 "interval": 3000
             }
+        },
+        {
+            "name": "badboy",
+            "params": {
+                "permission_to_slay": "ip",
+                "key_data": "ya.ru",
+                "execution_time": 10000
+            }
         }
         ]
 }

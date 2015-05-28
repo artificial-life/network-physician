@@ -38,7 +38,7 @@ var getPermissionList = function (module_name) {
 /**
  * Internal service for Auth service, but emits events on Q
  */
-class PermissionList extends Abstract {
+class PermissionHolder extends Abstract {
     constructor() {
         super({
             event_group: 'permission'
@@ -80,7 +80,6 @@ class PermissionList extends Abstract {
     restore(data) {
         var name = data.name;
         var changed = this.getPermission(name).restore(data);
-
         if (changed) {
             this.emitter.emit(this.event_names.restored(data.name, data.key), {
                 permission: data
@@ -119,4 +118,4 @@ class PermissionList extends Abstract {
 }
 
 
-module.exports = PermissionList;
+module.exports = PermissionHolder;

@@ -1,4 +1,5 @@
 'use strict'
+
 var Abstract = require('./abstract.js');
 var Promise = require('bluebird');
 var http = require("http");
@@ -64,6 +65,7 @@ class Single extends Abstract {
                     })
                     .catch(function (data) {
                         var is_timeout = data.hasOwnProperty("message") && data.message === 'timeout';
+
                         self.send('drop', is_timeout ? 'low-latency' : 'ping-error');
                     });
             }

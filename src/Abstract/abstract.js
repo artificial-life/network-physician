@@ -1,8 +1,10 @@
 'use strict'
 
-var getEvents = require('../const/events.js');
 var Promise = require('bluebird');
 var _ = require('lodash');
+
+var getEvents = require('../const/events.js');
+var PermissionLogic = require('./permission-logic.js');
 
 /*utility function*/
 
@@ -25,9 +27,6 @@ class Abstrasct_Service {
     constructor({
         event_group = ''
     }) {
-        //rework this two as state
-        this.paused = true;
-        this.is_waiting = false;
 
         this.event_names = event_group ? this.getEvents(event_group) : {};
         this.queues_required = {
@@ -35,55 +34,49 @@ class Abstrasct_Service {
             "task-queue": false
         };
 
-        //@TODO: move to permission logic
-        this.required_permissions = [];
+        this.state('created');
+        this.required_permissions = new PermissionLogic();
+    }
+    state(name) {
+        if (!name) return this.state_id;
+
+        this.state_id = name.toLowerCase();
+
+        switch (this.state_id) {
+        case 'created':
+            break;
+        case 'init':
+            break;
+        case 'waiting':
+            break;
+        case 'working':
+            break;
+        case 'paused':
+            break;
+        default:
+            throw new Error('unknown state');
+            break;
+        }
+
+        return this;
     }
     getEvents(event_group) {
         return getEvents(event_group);
     }
     addPermission(name, params) {
-        var model = getPermissionModel(name);
-        var permission = new model(params);
-        this.required_permissions.push(permission);
-
-        return this;
+        this.required_permissions.add(name, params);
     }
-    requestPermission() {
-        if (!this.required_permissions.length) return Promise.resolve(true);
 
-        var messages = [];
-
-        _(this.required_permissions).forEach(permission => {
-            var request_message = permission.requestMessage();
-            messages.push(request_message);
-        }).value();
-
-        var request_permission_task = getEvents('permission').request;
-        var p = this.emitter.addTask(request_permission_task, messages);
-
-        return p;
-    }
     tryToStart() {
-        var request = this.requestPermission();
-        //@TODO: add timeout()
-        //move this to permission logic
-        request.then((result) => {
-                if (result === true || result.valid === true) {
-                    if (this.is_waiting || this.paused) this.start();
-                } else {
-                    this.is_waiting = true;
+        this.required_permissions.request().then((result) => {
+            if (result === true) {
+                console.log('Abastract: can start now');
+                this.start();
+            } else {
+                console.log('Abastract: some permissions dropped, start is delayed');
+            }
+        }).catch(() => console.log('couldnt get permissions for servcise,everything is realy bad'));
 
-                    var details = result.details;
-                    for (var i = 0; i < details.length; i += 1) {
-                        if (!details[i].valid) {
-                            this.required_permissions[i].drop();
-                        }
-                    }
-                }
-            })
-            .catch(() => {
-                throw new Error('Auth error');
-            });
     }
     setChannels(options) {
         if (!options.hasOwnProperty('queue')) {
@@ -102,8 +95,9 @@ class Abstrasct_Service {
 
         }
 
-        //@TODO: this should be much better. If EQ and TQ specified they should be combined in complex emitter
+        this.required_permissions.setChannels(options)
 
+        //@TODO: this should be much better. If EQ and TQ specified they should be combined in complex emitter
         this.emitter = options.queue || options['event-queue'] || options['task-queue'];
 
     }
@@ -114,17 +108,14 @@ class Abstrasct_Service {
         if (!this.emitter && (this.queues_required['event-queue'] || this.queues_required['task-queue'])) {
             return Promise.reject('U should set channels before');
         }
-        //@TODO:detach it to permission logic
-        var permission_events = getEvents('permission');
 
-        _(this.required_permissions).forEach(permission => {
-            var event_name = permission_events.restored(permission.getName(), permission.keyToString());
-            this.emitter.on(event_name, (d) => {
-                console.log('Yeah', d);
-                if (this.is_waiting) this.tryToStart();
-            });
-        }).value();
+        this.required_permissions.dropped(() => console.log('Abstract : oh no, so bad'));
+        this.required_permissions.restored(() => {
+            this.start();
+            console.log('Abstract : excelent...');
+        });
 
+        this.state('init');
 
         return Promise.resolve(true);
     }
@@ -132,22 +123,22 @@ class Abstrasct_Service {
     start() {
         //@TODO: What should it do in current context?
         //@TODO: requesPermissions() here
-        this.is_waiting = false;
-        this.paused = false;
+        this.state('working');
 
         return this;
     }
 
     pause() {
         //@TODO: What should it do in current context?
-        this.paused = true;
+        this.state('paused');
 
         return this;
     }
 
     resume() {
         //@TODO: What should it do in current context?
-        this.paused = false;
+        //this.state('waiting');
+        //set waiting, call permissions, get 
 
         return this;
     }

@@ -8,6 +8,10 @@ class SampleService extends Abstract {
         this.addPermission('ip', 'ya.ru');
 
     }
+    start() {
+        super.start();
+        console.log('SampleService: Started!');
+    }
 }
 
 module.exports = SampleService;

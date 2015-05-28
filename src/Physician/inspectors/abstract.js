@@ -43,7 +43,6 @@ class Abstract_Inspector {
         var data = _.clone(this.data_to_send, true);
 
         if (reason) data.reason = reason;
-        //   console.log(data);
 
         switch (event_type) {
         case 'drop':

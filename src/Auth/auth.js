@@ -61,8 +61,6 @@ class Auth extends Abstract {
          * own API
          */
     check(asked_permissions) {
-        console.log(asked_permissions);
-
         asked_permissions = util.isArray(asked_permissions) ? asked_permissions : [asked_permissions];
 
         if (asked_permissions.length === 0) {}
