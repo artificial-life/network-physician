@@ -34,7 +34,7 @@ class PingInspector {
     }
 
     start() {
-        _(this.pingers).forEach(pinger => pinger.run()).value();
+        _(this.pingers).forEach(pinger => pinger.start()).value();
     }
 }
 

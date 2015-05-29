@@ -14,7 +14,8 @@
             "params": {
                 "permission_to_slay": "ip",
                 "key_data": "ya.ru",
-                "execution_time": 10000
+                "execution_time": 10000,
+                "revive_time": 15000
             }
         }
         ]

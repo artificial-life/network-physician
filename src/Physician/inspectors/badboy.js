@@ -16,16 +16,24 @@ class BadBoy extends Abstract {
         });
 
         this.execution_time = params.execution_time;
+        this.revive_time = params.revive_time;
     }
     start() {
-        this.stop = false;
+        this.paused = false;
         setTimeout(() => {
             console.log('Badboy: Executed!');
-            if (!this.stop) this.send('drop', "i'm freaking bad, u know");
+            if (!this.paused) this.send('drop', "i'm freaking bad, u know");
         }, this.execution_time);
+
+        if (this.revive_time) {
+            setTimeout(() => {
+                console.log('Badboy: revived...');
+                if (!this.paused) this.send('restore', "sometimes i'm doing good things");
+            }, this.revive_time);
+        }
     }
     stop() {
-        this.stop = true;
+        this.paused = true;
     }
 }
 

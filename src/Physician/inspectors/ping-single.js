@@ -74,7 +74,7 @@ class Single extends Abstract {
         forever_ping();
     }
 
-    run() {
+    start() {
         this.stop = false;
         this.ping();
     }

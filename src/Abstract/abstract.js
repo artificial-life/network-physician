@@ -69,6 +69,8 @@ class Abstrasct_Service {
 
     tryToStart() {
         this.required_permissions.request().then((result) => {
+            this.state('waiting');
+
             if (result === true) {
                 console.log('Abastract: can start now');
                 this.start();
@@ -109,10 +111,19 @@ class Abstrasct_Service {
             return Promise.reject('U should set channels before');
         }
 
-        this.required_permissions.dropped(() => console.log('Abstract : oh no, so bad'));
+        this.required_permissions.dropped(() => {
+            if (this.state() === 'working') {
+                console.log('Abstract : oh no, so bad');
+                this.pause();
+                this.state('waiting');
+            }
+        });
+
         this.required_permissions.restored(() => {
-            this.start();
-            console.log('Abstract : excelent...');
+            if (this.state() === 'waiting') {
+                this.start();
+                console.log('Abstract : excelent...');
+            }
         });
 
         this.state('init');
@@ -123,6 +134,8 @@ class Abstrasct_Service {
     start() {
         //@TODO: What should it do in current context?
         //@TODO: requesPermissions() here
+        if (this.state() === 'working') throw new Error('Running already!');
+
         this.state('working');
 
         return this;
@@ -139,7 +152,6 @@ class Abstrasct_Service {
         //@TODO: What should it do in current context?
         //this.state('waiting');
         //set waiting, call permissions, get 
-
         return this;
     }
 }

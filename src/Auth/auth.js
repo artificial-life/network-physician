@@ -37,6 +37,8 @@ class Auth extends Abstract {
     }
 
     start() {
+        super.start();
+
         this.paused = false;
         this.list.start();
 
@@ -45,21 +47,17 @@ class Auth extends Abstract {
 
     pause() {
         //@TODO: Dunno what should they do when paused or resumed
+        super.pause();
+        
         this.paused = true;
         this.list.pause();
 
         return this;
     }
-    resume() {
-            //@TODO: Dunno what should they do when paused or resumed
-            this.paused = false;
-            this.list.resume();
 
-            return this;
-        }
-        /**
-         * own API
-         */
+    /**
+     * own API
+     */
     check(asked_permissions) {
         asked_permissions = util.isArray(asked_permissions) ? asked_permissions : [asked_permissions];
 

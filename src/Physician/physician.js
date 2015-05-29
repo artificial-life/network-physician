@@ -20,11 +20,6 @@ class Doctor extends Abstract {
         }
         this.config = config;
 
-        return this.emitter ? Promise.resolve(true) : Promise.reject('U should set channels before');
-    }
-    start() {
-        this.paused = false;
-
         var inspectors_names = this.config.inspectors;
         var len = inspectors_names.length;
 
@@ -42,25 +37,26 @@ class Doctor extends Abstract {
 
             var Inspector_Model = require('./inspectors/' + name + '.js');
             var inspector = new Inspector_Model(params, emitter_functions);
-            inspector.start();
             this.inspectors_array.push(inspector);
+        }
+
+        return this.emitter ? Promise.resolve(true) : Promise.reject('U should set channels before');
+
+    }
+    start() {
+        super.start();
+
+        for (var i = 0; i < this.inspectors_array.length; i += 1) {
+            this.inspectors_array[i].start();
         }
 
         return this;
     }
     pause() {
-        this.pause = true;
+        super.pause();
+
         for (var i = 0; i < this.inspectors_array.length; i += 1) {
             this.inspectors_array[i].stop();
-        }
-
-        return this;
-    }
-
-    resume() {
-        this.pause = false;
-        for (var i = 0; i < this.inspectors_array.length; i += 1) {
-            this.inspectors_array[i].start();
         }
 
         return this;

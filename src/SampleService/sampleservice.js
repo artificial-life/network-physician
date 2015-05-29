@@ -12,6 +12,10 @@ class SampleService extends Abstract {
         super.start();
         console.log('SampleService: Started!');
     }
+    pause() {
+        super.pause();
+        console.log('SampleService: Paused!');
+    }
 }
 
 module.exports = SampleService;
