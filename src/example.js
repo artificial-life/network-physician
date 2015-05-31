@@ -9,6 +9,7 @@ var Promise = require('bluebird');
 
 var Doctor = require('./Physician/physician.js');
 var Auth = require('./Auth/auth.js');
+var MessageHub = require('./MessageHub/messagehub.js');
 var Sample = require('./SampleService/sampleservice.js');
 
 var Queue = require('custom-queue');
@@ -16,7 +17,7 @@ var Queue = require('custom-queue');
 var doctor = new Doctor();
 var auth = new Auth();
 var sample = new Sample();
-
+var hub = new MessageHub();
 //var ee = new EventEmitter2({
 //    wildcard: false,
 //    newListener: false,
@@ -33,6 +34,10 @@ auth.setChannels({
     "queue": ee
 });
 
+hub.setChannels({
+    "queue": ee
+});
+
 sample.setChannels({
     "queue": ee
 });
@@ -40,11 +45,15 @@ sample.setChannels({
 Promise.props({
     auth: auth.init(),
     doctor: doctor.init(iconfig),
-    sample: sample.init()
+    sample: sample.init(),
+    hub: hub.init({
+        port: 3000
+    }),
 }).then(function () {
     auth.tryToStart();
     doctor.tryToStart();
     sample.tryToStart();
+    hub.tryToStart();
 });
 
 /* this will be cooler next time */

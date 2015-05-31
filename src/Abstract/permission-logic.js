@@ -95,7 +95,7 @@ class ServicePermissionUtils {
                 } else {
                     //pessimistic permission cheking
                     //we can lose some events (or can not?)
-                    this.reques().then((result) => {
+                    this.request().then((result) => {
                         if (result === true) {
                             callback.call(null);
                         } else {

@@ -72,10 +72,10 @@ class Abstrasct_Service {
             this.state('waiting');
 
             if (result === true) {
-                console.log('Abastract: can start now');
+                console.log('Abstract: can start now');
                 this.start();
             } else {
-                console.log('Abastract: some permissions dropped, start is delayed');
+                console.log('Abstract: some permissions dropped, start is delayed');
             }
         }).catch(() => console.log('couldnt get permissions for servcise,everything is realy bad'));
 
