@@ -20,6 +20,7 @@ class BadBoy extends Abstract {
     }
     start() {
         this.paused = false;
+
         setTimeout(() => {
             console.log('Badboy: Executed!');
             if (!this.paused) this.send('drop', "i'm freaking bad, u know");

@@ -3,6 +3,7 @@
 var Abstract = require('../Abstract/abstract.js');
 var http = require('http');
 var socketio = require('socket.io');
+var events_router = require('socket.io-events');
 
 const DEFAULT_PORT = 80;
 
@@ -18,19 +19,34 @@ class MessageHub extends Abstract {
         super.init(options);
         var port = options.port || DEFAULT_PORT;
         this.io = socketio(port);
-        console.log(port);
+
         var io = this.io;
-        io.on('connection', function (socket) {
-            io.emit('news', {
-                hello: 'be received by everyone'
+
+        /*   var router = events_router();
+        io.use(router);
+
+        router.on('*', function (socket, args, next) {
+            console.log('router:', args);
+        });
+*/
+        io.on('connection', (socket) => {
+
+
+            socket.on('init.client', (msg, fn) => {
+                console.log('Client id:', msg.my_id);
+                fn({
+                    status: 'ok'
+                });
             });
 
-            socket.on('my other event', function (from, msg) {
-                console.log('I received a private message by ', from, ' saying ', msg);
+            socket.on('broker.list.resources', (msg, fn) => {
+                this.emitter.addTask('broker.list.resources', msg).then(function (data) {
+                    fn(data);
+                });
             });
 
-            socket.on('disconnect', function (reason) {
-                console.log('user left', reason);
+            socket.on('disconnect', (reason) => {
+                console.log('user left:', reason);
             });
         });
     }

@@ -25,7 +25,10 @@
     "devDependencies": {
         "gulp": "^3.8.11",
         "gulp-babel": "^5.1.0",
+        "gulp-changed": "^1.2.1",
         "gulp-concat": "^2.5.2",
+        "gulp-develop-server": "^0.4.3",
+        "gulp-livereload": "^3.8.0",
         "gulp-sourcemaps": "^1.5.2",
         "gulp-watch": "^4.2.4",
         "harmonize": "^1.4.2"
