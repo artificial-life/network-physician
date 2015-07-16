@@ -57,9 +57,9 @@ Promise.props({
     }),
     broker: broker.init()
 }).then(function () {
-    auth.tryToStart();
-    doctor.tryToStart();
-    sample.tryToStart();
-    hub.tryToStart();
-    broker.tryToStart();
+    auth.launch();
+    doctor.launch();
+    sample.launch();
+    hub.launch();
+    broker.launch();
 });
